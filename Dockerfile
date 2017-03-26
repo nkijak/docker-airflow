@@ -1,18 +1,18 @@
-# VERSION 1.7.1.3-7
+# VERSION 1.8.0
 # AUTHOR: Matthieu "Puckel_" Roisil
 # DESCRIPTION: Basic Airflow container
-# BUILD: docker build --rm -t puckel/docker-airflow .
-# SOURCE: https://github.com/puckel/docker-airflow
+# BUILD: docker build --rm -t nkijak/docker-airflow .
+# SOURCE: https://github.com/nkijak/docker-airflow
 
 FROM debian:jessie
-MAINTAINER Puckel_
+MAINTAINER nkijak
 
 # Never prompts the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-ARG AIRFLOW_VERSION=1.7.1.3
+ARG AIRFLOW_VERSION=1.8.0
 ENV AIRFLOW_HOME /usr/local/airflow
 
 # Define en_US.
@@ -34,6 +34,8 @@ RUN set -ex \
         libblas-dev \
         liblapack-dev \
         libpq-dev \
+        unixodbc \
+        freetds-dev \
     ' \
     && echo "deb http://http.debian.net/debian jessie-backports main" >/etc/apt/sources.list.d/backports.list \
     && apt-get update -yqq \
@@ -55,7 +57,7 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
-    && pip install airflow[crypto,celery,postgres,hive,hdfs,jdbc]==$AIRFLOW_VERSION \
+    && pip install airflow[crypto,celery,postgres,hive,hdfs,jdbc,s3,mssql]==$AIRFLOW_VERSION \
     && pip install celery[redis]==3.1.17 \
     && apt-get remove --purge -yqq $buildDeps \
     && apt-get clean \
